@@ -1,0 +1,55 @@
+﻿@model TodoViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Todo List</h1>
+
+<h4>Add a todo</h4>
+
+<div>
+    @await Html.PartialAsync("AddItemPartial", new TodoItem())
+</div>
+
+
+<h4>Current Todos</h4>
+
+@if (!Model.Items.Any())
+{
+    <p class="empty">The list is empty...</p>
+}
+else
+{
+    <ul class="list-unstyled">
+        @foreach (var todo in Model.Items)
+        {
+            <li>
+                <form method="post" asp-action="Remove" style="display: inline">
+                    <input type="hidden" name="Id" value="@todo.Id"/>
+                    <button type="submit" class="btn btn-link"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                </form>
+                <form method="post" asp-action="Edit" style="display: inline">
+                    <input type="hidden" name="Id" value="@todo.Id" />
+                    <button type="submit" class="btn btn-link"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                </form>
+                @todo.Description
+            </li>
+        }
+    </ul>
+}
+
+
+
+<style>
+    .validation-summary-errors ul {
+        list-style-type: none;
+        color: red;
+        padding: 0;
+        margin: 0;
+    }
+
+    .empty {
+        color: lightgray;
+    }
+</style>
