@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,23 +19,16 @@ namespace TodoMvc
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            EnsureDbCreated();
         }
 
-        private void EnsureDbCreated()
-        {
-            using (var dbcontext = new TodoDbContext())
-            {
-                dbcontext.Database.EnsureCreated();
-            }
-        }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TodoDbContext>();
+            services.AddDbContext<TodoDbContext>(opts =>
+                opts.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
 
             services.AddScoped<ITodoRepository, TodoRepository>();
 
